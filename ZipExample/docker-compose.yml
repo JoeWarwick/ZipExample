@@ -1,0 +1,30 @@
+﻿version: '3.4'
+
+networks:
+  dockerapi-dev:
+    driver: nat 
+
+services:
+  dockerapi:
+    image: ZipExample:latest
+    depends_on:
+      - "sql_data"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"     
+    networks:
+      - dockerapi-dev  
+  
+  sql_data:
+    image: microsoft/mssql-server-windows-developer:2017-latest
+    environment:
+      - SA_PASSWORD=p@ssw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "1445:1433"
+    networks:
+      - dockerapi-dev
+volumes:
+  db_volume:
